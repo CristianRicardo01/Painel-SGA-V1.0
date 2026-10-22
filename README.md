@@ -104,7 +104,7 @@ O projeto foi preparado para poder ficar dentro de uma subpasta do `htdocs`, sem
 Exemplo de caminho no Windows:
 
 ```text
-C:\xampp\htdocs\sgaprd\paineltv-modernizado\
+C:\xampp\htdocs\<NOME DA PASTA DO SGA>\paineltv-modernizado\
 ```
 
 1. Na máquina de desenvolvimento, execute `npm run build`.
@@ -114,7 +114,7 @@ C:\xampp\htdocs\sgaprd\paineltv-modernizado\
 5. Acesse o endereço correspondente à sua instalação, por exemplo:
 
    ```text
-   http://localhost/sgaprd/paineltv-modernizado/
+   http://localhost/<NOME DA PASTA DO SGA>/paineltv-modernizado/
    ```
 
    Para abrir em outro computador ou TV da rede, substitua `localhost` pelo endereço IP ou nome de rede do servidor.

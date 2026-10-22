@@ -1,0 +1,24 @@
+# Hospeda a aplicação compilada sem tirar nenhum arquivo de paineltv-modernizado.
+# URL: http://servidor/sgaprd/paineltv-modernizado/
+Options -Indexes
+RewriteEngine On
+
+# Recursos de campanha foram desativados; não encaminhe rotas antigas à SPA.
+RewriteRule ^api(/|$) - [F,END,NC]
+
+# Sons ficam em public/ e são servidos sem duplicá-los em dist/.
+RewriteRule ^sounds/(.*)$ public/sounds/$1 [END,NC]
+
+# CSS/JavaScript do Vite ficam na pasta dist/assets, mas o navegador os pede em /assets/.
+RewriteRule ^assets/(.*)$ dist/assets/$1 [END]
+
+# A entrada fonte não deve ser servida; entregue o index compilado.
+RewriteRule ^index\.html$ dist/index.html [END]
+
+# Evita acesso direto ao código-fonte e aos arquivos de configuração.
+RewriteRule ^(src|node_modules|\.git|\.vite|public)(/|$) - [F,END,NC]
+RewriteRule ^(package\.json|package-lock\.json|vite\.config\.js|README\.md|ANALISE-DO-PROJETO\.md|preview\.html|\.gitignore|\.env)$ - [F,END,NC]
+
+# A aplicação fica dentro de dist, mas a URL não mostra esse diretório.
+RewriteRule ^$ dist/index.html [END]
+RewriteRule ^.*$ dist/index.html [END]

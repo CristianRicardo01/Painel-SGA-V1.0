@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101d34" />
+  <title>Prévia visual · Painel SGA</title>
+  <link rel="stylesheet" href="src/style.css" />
+  <style>
+    .preview-dialog[hidden], .fullscreen-exit-button[hidden] { display:none !important; }
+    .preview-dialog { position:fixed; z-index:20; inset:0; display:grid; place-items:center; padding:20px; background:rgba(10,20,36,.56); backdrop-filter:blur(8px); }
+    .preview-box { width:min(100%,500px); padding:26px; border:1px solid #fff; border-radius:20px; background:#fff; box-shadow:0 30px 95px rgba(1,13,31,.3); }
+    .preview-box h2 { margin:0 0 8px; color:#17243a; font-family:Inter,system-ui,sans-serif; }
+    .preview-box p { color:#7b8798; font-size:13px; line-height:1.65; }
+    .preview-box button { min-height:40px; padding:0 14px; color:#fff; border:0; border-radius:10px; background:#108d83; cursor:pointer; font-weight:700; }
+    .preview-box .button-quiet { color:#69768a; border:1px solid #e0e6ed; background:#fff; }
+    .preview-actions { display:flex; justify-content:flex-end; gap:9px; margin-top:20px; }
+    .preview-note { display:inline-flex; margin-top:10px; padding:7px 10px; color:#7f6535; border:1px solid #f1e4c7; border-radius:8px; background:#fffaf0; font-size:10px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">S</div>
+      <div class="brand-copy"><span class="brand-kicker">SGA · SISTEMA DE GERENCIAMENTO DE ATENDIMENTO</span><h1 id="brand-name">Painel de Atendimento</h1></div>
+    </div>
+    <div class="topbar-tools">
+      <div class="connection-pill state-demo"><span class="connection-dot"></span><span>Modo demonstração</span></div>
+      <div class="date-block"><span class="date-time" id="clock">14:52</span><span class="date-text" id="date"></span></div>
+      <button class="icon-button" id="open-settings" type="button" aria-label="Abrir configurações" title="Configurações"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.08-.03a1.7 1.7 0 0 0-1.84.38l-.05.05h-3.4l-.02-.08a1.7 1.7 0 0 0-1.4-1.23l-.08-.01-2.94-1.7.03-.08a1.7 1.7 0 0 0-.38-1.84l-.05-.05v-3.4l.08-.02a1.7 1.7 0 0 0 1.23-1.4l.01-.08 1.7-2.94.08.03a1.7 1.7 0 0 0 1.84-.38l.05-.05h3.4l.02.08a1.7 1.7 0 0 0 1.4 1.23l.08.01 2.94 1.7-.03.08a1.7 1.7 0 0 0 .38 1.84l.05.05v3.4l-.08.02a1.7 1.7 0 0 0-1.23 1.4Z"></path></svg></button>
+      <button class="icon-button" id="fullscreen" type="button" aria-label="Alternar tela cheia" title="Tela cheia"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+    </div>
+  </header>
+
+  <button class="fullscreen-exit-button" id="fullscreen-exit" type="button" aria-label="Sair da tela cheia" title="Voltar ao tamanho normal" hidden>
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M20 9h-5V4M4 15h5v5M15 20v-5h5"></path></svg>
+  </button>
+
+  <main class="dashboard-grid">
+    <section class="current-call-panel" id="call-panel" aria-labelledby="current-call-title">
+      <div class="panel-orb orb-one"></div><div class="panel-orb orb-two"></div>
+      <div class="call-panel-content">
+        <div class="call-panel-topline"><div class="live-label"><span class="live-pulse"></span> CHAMADA ATUAL</div><span class="normal-chip" id="call-chip">ATENDIMENTO</span></div>
+        <div class="ticket-heading"><p id="current-call-title">Atendimento geral</p><span class="ticket-caption">Por favor, fique atento ao painel</span></div>
+        <div class="ticket-number-wrap" id="ticket-number-wrap"><span class="ticket-number" id="ticket-code">A042</span><span class="ticket-number-underline"></span><div class="ticket-clock" aria-label="Horário atual"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"></path></svg><div class="ticket-clock-copy"><strong id="ticket-clock">14:52</strong><span id="ticket-date"></span></div></div></div>
+        <div class="destination-card"><div class="destination-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2"></circle></svg></div><div class="destination-copy"><span class="destination-label">DIRIJA-SE AO</span><strong id="destination">Guichê 03</strong><span class="destination-hint">Seu atendimento será iniciado em breve</span></div><svg class="destination-chevron" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div>
+        <div class="call-panel-foot"><div class="foot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5ZM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg></div><span>Ouça o aviso sonoro e confira o local indicado.</span></div>
+      </div>
+    </section>
+
+    <section class="right-content-panel">
+      <div class="welcome-card"><div class="welcome-copy"><div class="section-eyebrow"><span class="eyebrow-line"></span> BEM-VINDO(A)</div><h2 id="greeting">Boa tarde!<br><span>Estamos prontos para atender você.</span></h2><p>Acompanhe as chamadas neste painel. Quando sua senha aparecer, dirija-se ao guichê indicado.</p><div class="welcome-tags"><span>◷ Atendimento organizado</span><span>✓ Informação em tempo real</span></div></div><div class="welcome-art" aria-hidden="true"><div class="art-ring ring-outer"></div><div class="art-ring ring-middle"></div><div class="art-ring ring-inner"></div><div class="art-cross"><span></span><span></span></div><div class="art-orbit orbit-a"></div><div class="art-orbit orbit-b"></div></div><div class="welcome-card-bottom"><span class="welcome-bottom-dot"></span><span>Obrigado por aguardar. Sua atenção é importante.</span></div></div>
+      <section class="history-section" aria-labelledby="history-title"><div class="history-header"><div><div class="section-eyebrow">ACOMPANHAMENTO</div><h2 id="history-title">Últimas chamadas</h2></div><div class="history-live"><span class="history-live-dot"></span> Atualização automática</div></div><div class="history-grid" id="history-grid"></div></section>
+      <footer class="right-footer"><span class="footer-brand"><span class="footer-mark">S</span><span id="brand-subtitle">CENTRAL DE ATENDIMENTO</span></span><span class="footer-message">Mantenha seus documentos em mãos durante o atendimento.</span></footer>
+    </section>
+  </main>
+
+  <div class="demo-tools"><span><span class="demo-dot"></span> Prévia visual · dados fictícios</span><button id="simulate" type="button">Simular chamada <span aria-hidden="true">›</span></button></div>
+</div>
+
+<div class="preview-dialog" id="preview-dialog" hidden>
+  <section class="preview-box" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+    <h2 id="preview-title">Prévia do novo painel</h2>
+    <p>Esta página é apenas uma prévia visual estática, com chamadas fictícias. A versão Vue contém a configuração de URL da API, seleção de unidade/serviços, som, voz e salvamento das opções.</p>
+    <span class="preview-note">Para iniciar a aplicação completa: npm install → npm run dev</span>
+    <div class="preview-actions"><button class="button-quiet" id="close-settings" type="button">Fechar</button><button id="run-app-instructions" type="button">Entendi</button></div>
+  </section>
+</div>
+
+<script>
+  const calls = [
+    { id: 43, code: 'A043', service: 'Atendimento geral', location: 'Guichê 04', priority: false, time: '' },
+    { id: 44, code: 'P014', service: 'Atendimento prioritário', location: 'Guichê 01', priority: true, time: '' },
+    { id: 45, code: 'B019', service: 'Retirada de documentos', location: 'Guichê 02', priority: false, time: '' },
+    { id: 46, code: 'A044', service: 'Atendimento geral', location: 'Guichê 03', priority: false, time: '' }
+  ];
+  let current = { id: 42, code: 'A042', service: 'Atendimento geral', location: 'Guichê 03', priority: false, time: '14:52' };
+  let history = [
+    { id: 41, code: 'A041', service: 'Atendimento geral', location: 'Guichê 02', priority: false, time: '14:50' },
+    { id: 40, code: 'P006', service: 'Atendimento prioritário', location: 'Guichê 01', priority: true, time: '14:48' },
+    { id: 39, code: 'B018', service: 'Retirada de documentos', location: 'Guichê 04', priority: false, time: '14:47' },
+    { id: 38, code: 'A040', service: 'Atendimento geral', location: 'Guichê 03', priority: false, time: '14:43' }
+  ];
+  const timeFmt = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const dateFmt = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  function updateDate() {
+    const now = new Date();
+    document.getElementById('clock').textContent = timeFmt.format(now);
+    document.getElementById('date').textContent = dateFmt.format(now);
+    document.getElementById('ticket-clock').textContent = timeFmt.format(now);
+    document.getElementById('ticket-date').textContent = dateFmt.format(now);
+    document.getElementById('greeting').innerHTML = `${now.getHours() < 12 ? 'Bom dia!' : now.getHours() < 18 ? 'Boa tarde!' : 'Boa noite!'}<br><span>Estamos prontos para atender você.</span>`;
+  }
+  function renderHistory() {
+    document.getElementById('history-grid').innerHTML = history.slice(0, 4).map(ticket => `
+      <article class="history-card ${ticket.priority ? 'history-priority' : ''}">
+        <div class="history-card-top"><span class="history-code">${ticket.code}</span><span class="history-time">${ticket.time || '—'}</span></div>
+        <div class="history-card-bottom"><span class="history-location"><span aria-hidden="true">⌖</span> ${ticket.location}</span>${ticket.priority ? '<span class="mini-priority">Prioritária</span>' : ''}</div>
+      </article>`).join('');
+  }
+  function showNext() {
+    if (history.length) history = [{ ...current, time: timeFmt.format(new Date()) }, ...history.filter(t => t.id !== current.id)].slice(0, 4);
+    current = calls.shift() || { id: Date.now(), code: `A${String(Date.now()).slice(-3)}`, service: 'Atendimento geral', location: 'Guichê 02', priority: false };
+    current.time = timeFmt.format(new Date());
+    document.getElementById('current-call-title').textContent = current.service;
+    document.getElementById('ticket-code').textContent = current.code;
+    document.getElementById('destination').textContent = current.location;
+    const panel = document.getElementById('call-panel');
+    panel.classList.toggle('priority-panel', current.priority);
+    const chip = document.getElementById('call-chip');
+    chip.className = current.priority ? 'priority-chip' : 'normal-chip';
+    chip.textContent = current.priority ? 'PRIORITÁRIO' : 'ATENDIMENTO';
+    document.getElementById('ticket-number-wrap').animate([{opacity:.6, transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}], {duration:300, easing:'ease-out'});
+    renderHistory();
+  }
+  document.getElementById('simulate').addEventListener('click', showNext);
+  document.getElementById('open-settings').addEventListener('click', () => document.getElementById('preview-dialog').hidden = false);
+  document.getElementById('close-settings').addEventListener('click', () => document.getElementById('preview-dialog').hidden = true);
+  document.getElementById('run-app-instructions').addEventListener('click', () => document.getElementById('preview-dialog').hidden = true);
+  document.getElementById('preview-dialog').addEventListener('click', e => { if (e.target.id === 'preview-dialog') e.currentTarget.hidden = true; });
+  const shell = document.querySelector('.app-shell');
+  const fullscreenExit = document.getElementById('fullscreen-exit');
+  function syncPreviewFullscreen() {
+    const active = Boolean(document.fullscreenElement);
+    shell.classList.toggle('is-fullscreen', active);
+    fullscreenExit.hidden = !active;
+  }
+  document.addEventListener('fullscreenchange', syncPreviewFullscreen);
+  document.getElementById('fullscreen').addEventListener('click', async () => { try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); } catch {} });
+  fullscreenExit.addEventListener('click', async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); } catch {} });
+  updateDate(); renderHistory(); window.setInterval(updateDate, 1000);
+</script>
+</body>
+</html>
